@@ -1,3 +1,6 @@
+# LearnSphere
+an app that alows you to purchase and  learn courses any where through ur phone just a few clicks away ... 
+
 # test
 
 A new Flutter project.
