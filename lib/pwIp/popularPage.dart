@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:test/models/WhatsNewMo.dart';
+import 'package:test/models/grid_view.dart';
 import 'package:test/models/wishlistModel.dart';
+// import 'package:test/pages/wishlist.dart';
 import 'package:test/providers/Wishlistcart_Notifier.dart';
+// import 'package:test/services/network_request.dart';
 
-class WhatsNewPage extends StatefulWidget {
-  final WhatsnewModel whatsnewModel;
+class Popularpage extends StatefulWidget {
+  final PopularModel popularModel;
 
-  const WhatsNewPage({Key? key, required this.whatsnewModel}) : super(key: key);
-
+const Popularpage({Key? key, required this.popularModel}) : super(key: key);
   @override
-  _WhatsNewPageState createState() => _WhatsNewPageState();
+  _PopularpageState createState() => _PopularpageState();
 }
 
-class _WhatsNewPageState extends State<WhatsNewPage> {
-  late Widget currentBottomPage = Lessonspage(whatsnewModel: widget.whatsnewModel);
+class _PopularpageState extends State<Popularpage> {
+  late Widget currentBottomPage = Lessonspage(popularModel: widget.popularModel,);
   int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    final whatsnewModel = widget.whatsnewModel;
+    final popularModel = widget.popularModel;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detail', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('detailed', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: Consumer(
         builder: (context, ref, _) {
@@ -33,11 +34,11 @@ class _WhatsNewPageState extends State<WhatsNewPage> {
               SizedBox(
                 height: 200.0,
                 child: Image.network(
-                  whatsnewModel.imageUrl,
+                  popularModel.imageUrl,
                   fit: BoxFit.cover,
                 ),
               ),
-              const SizedBox(height: 20.0),
+              SizedBox(height: 20.0),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
@@ -48,7 +49,7 @@ class _WhatsNewPageState extends State<WhatsNewPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Name: ${whatsnewModel.title}',
+                          'Name: ${popularModel.title}',
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 20.0,
@@ -56,7 +57,7 @@ class _WhatsNewPageState extends State<WhatsNewPage> {
                           ),
                         ),
                         Text(
-                          'Price: ${whatsnewModel.price}',
+                          'Price: ${popularModel.price}',
                           style: const TextStyle(
                             color: Color.fromARGB(136, 11, 11, 11),
                             fontSize: 16.0,
@@ -68,10 +69,10 @@ class _WhatsNewPageState extends State<WhatsNewPage> {
                     ElevatedButton(
                       onPressed: () {
                         final wishlistItem = WishlistItem(
-                          id: whatsnewModel.id,
-                          title: whatsnewModel.title,
-                          imageUrl: whatsnewModel.imageUrl,
-                          price: whatsnewModel.price,
+                          id: popularModel.id,
+                          title: popularModel.title,
+                          imageUrl: popularModel.imageUrl,
+                          price: popularModel.price,
                         );
                         ref.read(wishlistProvider.notifier).addItem(wishlistItem);
                       },
@@ -80,13 +81,13 @@ class _WhatsNewPageState extends State<WhatsNewPage> {
                   ],
                 ),
               ),
-              const SizedBox(height: 20.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  buildTitle('Lessons', 0),
-                  buildTitle('About mentor', 1),
-                  buildTitle('Reviews', 2),
+          SizedBox(height: 20.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              buildTitle('Lessons', 0),
+              buildTitle('About mentor', 1),
+              buildTitle('Reviews', 2),
                 ],
               ),
               Expanded(
@@ -106,16 +107,16 @@ class _WhatsNewPageState extends State<WhatsNewPage> {
           selectedIndex = index;
           switch (selectedIndex) {
             case 0:
-              currentBottomPage = Lessonspage(whatsnewModel: widget.whatsnewModel);
+              currentBottomPage = Lessonspage(popularModel: widget.popularModel);
               break;
             case 1:
-              currentBottomPage = SecondHalfPage(whatsnewModel: widget.whatsnewModel);
+              currentBottomPage = SecondHalfPage(popularModel: widget.popularModel);
               break;
             case 2:
               currentBottomPage = ThirdHalfPage();
               break;
             default:
-              currentBottomPage = Lessonspage(whatsnewModel: widget.whatsnewModel);
+              currentBottomPage = Lessonspage(popularModel: widget.popularModel);
           }
         });
       },
@@ -143,58 +144,10 @@ class _WhatsNewPageState extends State<WhatsNewPage> {
   }
 }
 
-
-class SecondHalfPage extends StatelessWidget {
-  final WhatsnewModel whatsnewModel;
-
-  const SecondHalfPage({Key? key, required this.whatsnewModel}) : super(key: key);
-
-@override
-Widget build(BuildContext context) {
-return Scaffold(
-appBar: AppBar(
-title: Text('About Mentor'),
-),
-body: Padding(
-padding: const EdgeInsets.all(16.0),
-child: Column(
-crossAxisAlignment: CrossAxisAlignment.start,
-children: [
-Text(
-whatsnewModel.title,
-style: const TextStyle(
-fontSize: 24.0,
-fontWeight: FontWeight.bold,
-),
-),
-const SizedBox(height: 16),
-Container(
-padding: const EdgeInsets.all(16.0),
-decoration: BoxDecoration(
-color: Colors.green,
-borderRadius: BorderRadius.circular(8),
-),
-child: Text(
-whatsnewModel.description,
-style: const TextStyle(fontSize: 18.0),
-),
-),
-],
-),
-),
-);
-}
-}
-
-
-
-
-
-
 class Lessonspage extends StatelessWidget {
-  final WhatsnewModel whatsnewModel;
+  final PopularModel popularModel;
 
-  const Lessonspage({Key? key, required this.whatsnewModel}) : super(key: key);
+  const Lessonspage({Key? key, required this.popularModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -204,9 +157,9 @@ class Lessonspage extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: ListView.builder(
-        itemCount: whatsnewModel.chapters.length,
+        itemCount: popularModel.chapters.length,
         itemBuilder: (context, index) {
-          final chapter = whatsnewModel.chapters[index];
+          final chapter = popularModel.chapters[index];
           return ListTile(
             title: Text(chapter.title),
             subtitle: Text(chapter.content),
@@ -214,7 +167,7 @@ class Lessonspage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SecondHalfPage(whatsnewModel: whatsnewModel),
+                  builder: (context) => SecondHalfPage(popularModel: popularModel),
                 ),
               );
             },
@@ -224,6 +177,49 @@ class Lessonspage extends StatelessWidget {
     );
   }
 }
+
+class SecondHalfPage extends StatelessWidget {
+  final PopularModel popularModel;
+
+  const SecondHalfPage({Key? key, required this.popularModel}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Second Half Page'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              popularModel.title,
+              style: const TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                popularModel.description,
+                style: const TextStyle(fontSize: 18.0),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class ThirdHalfPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

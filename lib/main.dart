@@ -1,3 +1,5 @@
+import 'package:test/models/WhatsNewMo.dart';
+import 'package:test/models/grid_view.dart';
 import 'package:test/models/user.dart';
 import 'package:test/pages/NotificationPage.dart';
 import 'package:test/pages/otp_verification.dart';
@@ -14,8 +16,9 @@ import 'package:test/pages/sign_up.dart';
 import 'package:test/pages/wishlist.dart';
 import 'package:test/pwIp/catagory.dart';
 import 'package:test/pwIp/changepassword.dart';
-import 'package:test/pwIp/popular.dart';
+import 'package:test/pwIp/popularPage.dart';
 import 'package:test/pwIp/whatsnew.dart';
+import 'package:test/pwIp/coursepage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,11 +59,56 @@ class MyApp extends StatelessWidget {
         '/OTP':(context) => OTPverF(),
         '/notification':(context) => NotificationScreen(),
         '/search':(context) => SearchScreen(),
-        '/popular':(context)=>Popularpage(),
         '/Settings':(context)=>settings(),
         '/catagory':(context)=>CategoryPage(),
-        '/whatsnew':(context)=>whatsnewPage(),
         '/changepassw':(context)=>ChangePasswordPage(),
+        '/course':(context)=>coursepage(),
+
+      },
+ onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/whatsnew':
+            if (settings.arguments is WhatsnewModel) {
+              final args = settings.arguments as WhatsnewModel;
+              return MaterialPageRoute(
+                builder: (context) {
+                  return WhatsNewPage(whatsnewModel: args);
+                },
+              );
+            }
+            assert(false, 'Invalid arguments for /whatsnew');
+            return null;
+          
+          case '/popularpage':
+            if (settings.arguments is PopularModel) {
+              final args = settings.arguments as PopularModel;
+              return MaterialPageRoute(
+                builder: (context) {
+                  return Popularpage(popularModel: args);
+                },
+              );
+            }
+            assert(false, 'Invalid arguments for /popularpage');
+            return null;
+
+
+// for catagory page
+          //  case '/catagorypage':
+          //   if (settings.arguments is PopularModel) {
+          //     final args = settings.arguments as PopularModel;
+          //     return MaterialPageRoute(
+          //       builder: (context) {
+          //         return Popularpage(popularModel: args);
+          //       },
+          //     );
+          //   }
+          //   assert(false, 'Invalid arguments for /popularpage');
+          //   return null;
+
+          default:
+            assert(false, 'Need to implement ${settings.name}');
+            return null;
+        }
       },
     );
   }

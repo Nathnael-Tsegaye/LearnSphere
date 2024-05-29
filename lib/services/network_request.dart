@@ -8,29 +8,9 @@ import '../models/CatagoryMo.dart';
 
 
 
-
-
-final courseprovider = FutureProvider<List<Coursemodel>>(
-  (ref) async {
-    final response = await http.get(Uri.parse('https://api.course.com/data')); 
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      final List<Coursemodel> courses = data.map((item) {
-        return Coursemodel.fromJson(item as Map<String, dynamic>);
-      }).toList();
-      return courses;
-    } else {
-      throw Exception('Failed to load data');
-    }
-  },
-);
-
-
-
-
 final populardprovider = FutureProvider<List<PopularModel>>(
   (ref) async {
-    final response = await http.get(Uri.parse('https://api.popular.com/data')); 
+    final response = await http.get(Uri.parse('https://055eabfd-99f4-4620-808b-ab73e570a449.mock.pstmn.io')); 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       final List<PopularModel> imageTitlePairs = data.map((item) {
@@ -60,6 +40,7 @@ final whatsnewdprovider = FutureProvider<List<WhatsnewModel>>(
   },
 );
 
+
 final catagorydprovider = FutureProvider<List<CategoryModel>>(
   (ref) async {
     final response = await http.get(Uri.parse('https://api.catagory.com/data')); 
@@ -75,3 +56,18 @@ final catagorydprovider = FutureProvider<List<CategoryModel>>(
   },
 );
 
+
+final courseprovider = FutureProvider<List<Coursemodel>>(
+  (ref) async {
+    final response = await http.get(Uri.parse('https://api.course.com/data')); 
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      final List<Coursemodel> courses = data.map((item) {
+        return Coursemodel.fromJson(item as Map<String, dynamic>);
+      }).toList();
+      return courses;
+    } else {
+      throw Exception('Failed to load data');
+    }
+  },
+);

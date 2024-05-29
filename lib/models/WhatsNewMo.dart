@@ -11,14 +11,18 @@ class Chapter {
 }
 
 class WhatsnewModel {
+ final int id;
   final String imageUrl;
   final String title;
+  final double price;
   final String description;
   final List<Chapter> chapters;
 
   WhatsnewModel({
+     required this.id,
     required this.imageUrl,
     required this.title,
+    required this.price,
     required this.description,
     required this.chapters,
   });
@@ -38,8 +42,10 @@ class WhatsnewModel {
     }
 
     return  WhatsnewModel(
+     id: json['id'],
       imageUrl: json['imageUrl'] ?? '',
       title: json['title'] ?? '',
+      price: json['price']?? '',
       description: json['description'] ?? '',
       chapters: parsedChapters,
     );

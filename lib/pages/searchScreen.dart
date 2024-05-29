@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:test/models/Course.dart';
-import 'package:test/providers/searchprovider.dart';
+// import 'package:test/providers/searchprovider.dart';
 import 'package:test/components/search_bar.dart' as MySearchBar;
-import 'package:test/pwip/popular.dart';
+import 'package:test/pwIp/coursepage.dart';
+// import 'package:test/pwip/popularPage.dart';
 import 'package:test/services/network_request.dart'; 
 
 
@@ -67,7 +68,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Popularpage(), 
+                                builder: (context) => coursepage(), 
                               ),
                             );
                           },
@@ -99,7 +100,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Popularpage(), 
+                                builder: (context) => coursepage(), 
                               ),
                             );
                           },
