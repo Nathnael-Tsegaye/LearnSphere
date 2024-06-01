@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:test/pages/otp_verification.dart';
-
+import 'dart:convert'; 
 
 
 final firstNameProvider = StateProvider<TextEditingController>((ref) {
@@ -347,50 +349,67 @@ void na(BuildContext context,WidgetRef ref) {
 
 
    Future<void> _registerUser(BuildContext context, WidgetRef ref) async {
-    final firstname = ref.read(firstNameProvider).text;
-    final lastname = ref.read(lastNameProvider).text;
-    final passWord = ref.read(passwordProvider).text;
-    final confirmpassWord = ref.read(confirmPasswordProvider).text;
-    final email = ref.read(emailProvider).text;
-    final phone_number = ref.read(phoneNumberProvider).text;
-    final location = ref.read(locationProvider).text;
-    final accountType = ref.read(accountTypeProvider);
+  final firstname = ref.read(firstNameProvider).text;
+  final lastname = ref.read(lastNameProvider).text;
+  final passWord = ref.read(passwordProvider).text;
+  final confirmpassWord = ref.read(confirmPasswordProvider).text;
+  final email = ref.read(emailProvider).text;
+  final phone_number = ref.read(phoneNumberProvider).text;
+  final location = ref.read(locationProvider).text;
+  final accountType = ref.read(accountTypeProvider);
 
   if (firstname.isEmpty ||
-        lastname.isEmpty ||
-        passWord.isEmpty ||
-        confirmpassWord.isEmpty ||
-        email.isEmpty ||
-        phone_number.isEmpty) {
-      _showErrorDialog(context, 'Please fill in all required fields');
-      return;
-    }
-
-if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-      _showErrorDialog(context, 'Email address is invalid');
-      return;
-    }
-
-  try {
-    await http.post(
-      Uri.parse('https://api-for/register'),
-      body: {
-        'firstname': firstname,
-        'lastname': lastname,
-        'email': email,
-        'phoneNumber': phone_number,
-        'password': passWord,
-        'confirmpassword': confirmpassWord,
-        'location': location,
-        'accountType': accountType, 
-      },
-    );
-
-    Navigator.pushReplacementNamed(context, '/OTP');
-  } catch (error) {
-    print('Error registering user: $error');
+      lastname.isEmpty ||
+      passWord.isEmpty ||
+      confirmpassWord.isEmpty ||
+      email.isEmpty ||
+      phone_number.isEmpty) {
+    _showErrorDialog(context, 'Please fill in all required fields');
+    return;
   }
+
+  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+    _showErrorDialog(context, 'Email address is invalid');
+    return;
+  }
+
+ try {
+  final response = await http.post(
+    Uri.parse('https://vkrnzh7v-8000.euw.devtunnels.ms/api/register'),
+    headers: {'Content-Type': 'application/json'},
+    body: json.encode({
+      'first_name': firstname,
+      'last_name': lastname,
+      'email': email,
+      'password': passWord,
+      'password_confirmation': confirmpassWord,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    Navigator.pushReplacementNamed(context, '/home');
+  } else {
+    if (response.statusCode == 400) {
+      _showErrorDialog(context, 'Bad Request: Please check your input.');
+    } else if (response.statusCode == 401) {
+      _showErrorDialog(context, 'Unauthorized: Invalid credentials.');
+    } else if (response.statusCode == 409) {
+      _showErrorDialog(context, 'Conflict: User already exists.'); 
+    } else if (response.statusCode >= 500) {
+      _showErrorDialog(context, 'Internal Server Error: Please try again later.');
+    } else {
+      _showErrorDialog(context, 'Failed to register user. Please try again. (Error code: ${response.statusCode})');
+    }
+  }
+} on SocketException catch (e) {
+  _showErrorDialog(context, 'Network error. Please check your connection and try again.');
+} catch (error) {
+  print('Error registering user: $error');
+  _showErrorDialog(context, 'An unexpected error occurred. Please try again.');
 }
+   }
+
+   
 void _showErrorDialog(BuildContext context, String message) {
   showDialog(
     context: context,

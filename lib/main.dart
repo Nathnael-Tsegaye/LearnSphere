@@ -65,51 +65,51 @@ class MyApp extends StatelessWidget {
         '/course':(context)=>coursepage(),
 
       },
- onGenerateRoute: (settings) {
-        switch (settings.name) {
-          case '/whatsnew':
-            if (settings.arguments is WhatsnewModel) {
-              final args = settings.arguments as WhatsnewModel;
-              return MaterialPageRoute(
-                builder: (context) {
-                  return WhatsNewPage(whatsnewModel: args);
-                },
-              );
-            }
-            assert(false, 'Invalid arguments for /whatsnew');
-            return null;
-          
-          case '/popularpage':
-            if (settings.arguments is PopularModel) {
-              final args = settings.arguments as PopularModel;
-              return MaterialPageRoute(
-                builder: (context) {
-                  return Popularpage(popularModel: args);
-                },
-              );
-            }
-            assert(false, 'Invalid arguments for /popularpage');
-            return null;
+            onGenerateRoute: (settings) {
+                switch (settings.name) {
+                  case '/whatsnew':
+                    if (settings.arguments is WhatsnewModel) {
+                      final args = settings.arguments as WhatsnewModel;
+                      return MaterialPageRoute(
+                        builder: (context) {
+                          return WhatsNewPage(whatsnewModel: args);
+                        },
+                      );
+                    }
+                    assert(false, 'Invalid arguments for /whatsnew');
+                    return null;
+                  
+                  case '/popularpage':
+                    if (settings.arguments is PopularModel) {
+                      final args = settings.arguments as PopularModel;
+                      return MaterialPageRoute(
+                        builder: (context) {
+                          return Popularpage(popularModel: args);
+                        },
+                      );
+                    }
+                    assert(false, 'Invalid arguments for /popularpage');
+                    return null;
 
 
-// for catagory page
-          //  case '/catagorypage':
-          //   if (settings.arguments is PopularModel) {
-          //     final args = settings.arguments as PopularModel;
-          //     return MaterialPageRoute(
-          //       builder: (context) {
-          //         return Popularpage(popularModel: args);
-          //       },
-          //     );
-          //   }
-          //   assert(false, 'Invalid arguments for /popularpage');
-          //   return null;
-
-          default:
-            assert(false, 'Need to implement ${settings.name}');
-            return null;
-        }
-      },
+         // for catagory page
+                   //  case '/catagorypage':
+                   //   if (settings.arguments is PopularModel) {
+                   //     final args = settings.arguments as PopularModel;
+                   //     return MaterialPageRoute(
+                   //       builder: (context) {
+                   //         return Popularpage(popularModel: args);
+                   //       },
+                   //     );
+                   //   }
+                   //   assert(false, 'Invalid arguments for /popularpage');
+                   //   return null;
+         
+                   default:
+                     assert(false, 'Need to implement ${settings.name}');
+                     return null;
+                 }
+               },
     );
   }
 }

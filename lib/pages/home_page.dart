@@ -2,6 +2,7 @@
 
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:test/components/Notificationbell.dart';
@@ -10,8 +11,8 @@ import 'package:test/models/CatagoryMo.dart';
 import 'package:test/models/grid_view.dart';
 import 'package:test/pwIp/catagory.dart';
 import 'package:test/pwIp/coursepage.dart';
-import 'package:test/pwIp/popularPage.dart';
-import 'package:test/pwIp/whatsnew.dart'; 
+// import 'package:test/pwIp/popularPage.dart';
+// import 'package:test/pwIp/whatsnew.dart'; 
 import '../components/side_bar.dart';
 import '../services/network_request.dart';
 // ignore: library_prefixes
@@ -37,7 +38,8 @@ class HomePage extends ConsumerWidget {
           )
         ],
       ),
-      body: Padding(
+      body:SingleChildScrollView(
+      child: Padding(
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 25.0, 5.0),
         child: Column(
           children: [
@@ -56,7 +58,8 @@ class HomePage extends ConsumerWidget {
       ),
     
 
-Expanded(
+    Container(
+            height: 200,
   child: FutureBuilder<List<PopularModel>>(
 future: Future.delayed(const Duration(seconds: 2), () {
     return ref.watch(populardprovider.future) ?? Future.value([]);
@@ -82,7 +85,7 @@ future: Future.delayed(const Duration(seconds: 2), () {
           },
         );
       }else if (snapshot.hasError) {
-//  return Text('Error: ${snapshot.error}');
+ //  return Text('Error: ${snapshot.error}');
 
   return ListView.builder(
      
@@ -101,7 +104,7 @@ future: Future.delayed(const Duration(seconds: 2), () {
           );
         },
         child: Container(
-              width: 150,
+              width: 170,
               margin: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,20 +127,20 @@ future: Future.delayed(const Duration(seconds: 2), () {
             );
           },
         );
-} else {
-        return ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: snapshot.data!.length,
-          itemBuilder: (context, index) {
-            final pair = snapshot.data![index];
-            return InkWell(
-                 onTap: () {
-  Navigator.pushNamed(
-    context,
-    '/popularpage',
-    arguments: pair, 
-  );
-},
+       } else {
+               return ListView.builder(
+                 scrollDirection: Axis.horizontal,
+                 itemCount: snapshot.data!.length,
+                 itemBuilder: (context, index) {
+                   final pair = snapshot.data![index];
+                   return InkWell(
+                        onTap: () {
+         Navigator.pushNamed(
+           context,
+           '/popularpage',
+           arguments: pair, 
+         );
+       },
             child: Container(
               width: 150,
               margin: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -177,7 +180,8 @@ future: Future.delayed(const Duration(seconds: 2), () {
               ),
             ),
              const SizedBox(height: 5,),
-           Expanded(
+           Container(
+            height: 200,
              child: FutureBuilder<List<WhatsnewModel>>(
             future: Future.delayed(const Duration(seconds: 2), () {
     return ref.watch(whatsnewdprovider.future) ?? Future.value([]);        
@@ -242,7 +246,7 @@ future: Future.delayed(const Duration(seconds: 2), () {
             );
           },
           
-        ),
+        );
         
 
                 } else {
@@ -297,7 +301,8 @@ future: Future.delayed(const Duration(seconds: 2), () {
               ),
             ),
              const SizedBox(height: 5,),
-           Expanded(
+           Container(
+            height: 200,
              child: FutureBuilder<List<CategoryModel>>(
        future: Future.delayed(const Duration(seconds: 2), () {
     return ref.watch(catagorydprovider.future) ?? Future.value([]);
@@ -398,6 +403,7 @@ future: Future.delayed(const Duration(seconds: 2), () {
           ]
         )
       )
+    )
     );
   }
 }

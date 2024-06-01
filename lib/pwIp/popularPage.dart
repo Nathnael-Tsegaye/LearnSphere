@@ -24,7 +24,7 @@ class _PopularpageState extends State<Popularpage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('detailed', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('popular', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: Consumer(
         builder: (context, ref, _) {

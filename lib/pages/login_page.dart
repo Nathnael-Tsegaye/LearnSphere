@@ -5,34 +5,32 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:test/models/user.dart';
 import 'package:hive/hive.dart';
 
-
-
 class LoginState {
-  final TextEditingController usernameController;
+  final TextEditingController emailController; 
   final TextEditingController passwordController;
   final bool isLoading;
 
   LoginState({
-    required this.usernameController,
+    required this.emailController,
     required this.passwordController,
     required this.isLoading,
   });
 
   factory LoginState.initial() {
     return LoginState(
-      usernameController: TextEditingController(),
+      emailController: TextEditingController(), 
       passwordController: TextEditingController(),
       isLoading: false,
     );
   }
 
   LoginState copyWith({
-    TextEditingController? usernameController,
+    TextEditingController? emailController, 
     TextEditingController? passwordController,
     bool? isLoading,
   }) {
     return LoginState(
-      usernameController: usernameController ?? this.usernameController,
+      emailController: emailController ?? this.emailController,
       passwordController: passwordController ?? this.passwordController,
       isLoading: isLoading ?? this.isLoading,
     );
@@ -40,27 +38,35 @@ class LoginState {
 }
 
 class Logink {
-  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController(); 
   final TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
 
   Future<void> login(BuildContext context) async {
-    final String username = usernameController.text.trim();
+    final String email = emailController.text; 
     final String password = passwordController.text;
 
-    if (username.isEmpty || password.isEmpty) {
+    if (email.isEmpty || password.isEmpty) {
       _showErrorDialog(context, 'Please enter username and password');
       return;
     }
 
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
+      _showErrorDialog(context, 'Please enter a valid email address');
+      return;
+    }
+
     try {
-      final Uri loginUri = Uri.parse('http- back-end endpoint');
+      _setLoading(true);
+      final Uri loginUri = Uri.parse('https://vkrnzh7v-8000.euw.devtunnels.ms/api/login');
 
       final http.Response response = await http.post(
         loginUri,
-        body: {
-          'username': username,
+        body: json.encode({
+          'email': email,
           'password': password,
-        },
+        }),
+        headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
@@ -68,19 +74,17 @@ class Logink {
         final String accessToken = responseData['accessToken'];
         final String refreshToken = responseData['refreshToken'];
 
-        
         await saveTokensToHive(accessToken, refreshToken);
+        await saveCredentialsToHive(email, password);
 
-      
-        await saveCredentialsToHive(username, password);
-
-       
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         _showErrorDialog(context, 'Failed to login: ${response.reasonPhrase}');
       }
     } catch (error) {
       _showErrorDialog(context, 'Failed to login: $error');
+    } finally {
+      _setLoading(false);
     }
   }
 
@@ -99,38 +103,41 @@ class Logink {
     await loginBox.put('login', login);
   }
 
- void _showErrorDialog(BuildContext context, String message) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text(
-          'Error',
-          style: TextStyle(fontWeight: FontWeight.bold), 
-        ),
-        content: Text(message),
-        backgroundColor: const Color.fromARGB(255, 214, 204, 204),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('OK', style: TextStyle(color: Colors.black),),
-          ),
-        ],
-      );
-    },
-  );
-}
-}
-// void navigateToPage(BuildContext context) {
-//   Navigator.push(
-//     context,
-//     MaterialPageRoute(builder: (context) => HomePage()), 
-//   );
-// }
+  void _setLoading(bool loading) {
+    isLoading = loading;
+  }
 
-class LoginPage extends StatelessWidget {
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Error',
+            style: TextStyle(fontWeight: FontWeight.bold), 
+          ),
+          content: Text(message),
+          backgroundColor: const Color.fromARGB(255, 214, 204, 204),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK', style: TextStyle(color: Colors.black)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final Logink _loginController = Logink();
 
   @override
@@ -174,91 +181,94 @@ class LoginPage extends StatelessWidget {
               height: double.infinity,
               width: double.infinity,
               child: Padding(
-                padding: const EdgeInsets.only(top:20 ,left: 30.0, right: 30),
+                padding: const EdgeInsets.only(top:20, left: 30.0, right: 30),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                  const SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     TextField(
-                      controller: _loginController.usernameController,
-                      decoration:  InputDecoration(
-                         border: OutlineInputBorder(
-                               borderRadius: BorderRadius.circular(20.0), 
-                                 ),
-                        suffixIcon:const Icon(
+                      controller: _loginController.emailController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0), 
+                        ),
+                        suffixIcon: const Icon(
                           Icons.check,
                           color: Colors.grey,
                         ),
-                        labelText: 'User name',
-                        labelStyle:const TextStyle(
+                        labelText: 'Email',
+                        labelStyle: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Color.fromARGB(255, 151, 143, 144),
                         ),
                       ),
+                      keyboardType: TextInputType.emailAddress,
                     ),
                     const SizedBox(height: 20),
                     TextField(
                       controller: _loginController.passwordController,
                       obscureText: true,
-                      decoration:  InputDecoration(
-                         border: OutlineInputBorder(
-                               borderRadius: BorderRadius.circular(20.0), 
-                                 ),
-                        suffixIcon:const Icon(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0), 
+                        ),
+                        suffixIcon: const Icon(
                           Icons.lock,
                           color: Colors.grey,
                         ),
                         labelText: 'Password',
-                        labelStyle:const TextStyle(
+                        labelStyle: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Color.fromARGB(255, 122, 116, 117),
                         ),
                       ),
                     ),
-                   const SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Align(
                       alignment: Alignment.centerRight,
-                       child: GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, '/signup');// forgot password page ??
-                            },
-                            child:const Text(
-                              "Forgot password",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                                color: Colors.black,
-                              ),
-                            ),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/signup');
+                        },
+                        child: const Text(
+                          "Forgot password",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                            color: Colors.black,
                           ),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 70),
-                    Container(
-                      height: 50,
-                      width: 200,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color.fromARGB(255, 52, 41, 82),
-                            Color(0xff281537),
-                          ],
+                    if (_loginController.isLoading)
+                      CircularProgressIndicator()
+                    else
+                      Container(
+                        height: 50,
+                        width: 200,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color.fromARGB(255, 52, 41, 82),
+                              Color(0xff281537),
+                            ],
+                          ),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () => _loginController.login(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                          ),
+                          child: const Text(
+                            'Login',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
                         ),
                       ),
-                      child: ElevatedButton(
-                         onPressed: () => Navigator.pushNamed(context, '/home'),//_loginController.login(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                        ),
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(color: Colors.white, fontSize: 18),
-                        
-                        ),
-                      ),
-                    ),
-                  const SizedBox(height: 100),
-                     Align(
+                    const SizedBox(height: 100),
+                    Align(
                       alignment: Alignment.bottomRight,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
